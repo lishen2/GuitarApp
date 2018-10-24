@@ -1,9 +1,9 @@
 package com.lingyun.lishen.test1;
 
+import android.app.Activity;
 import android.media.AudioAttributes;
 import android.media.AudioManager;
 import android.media.SoundPool;
-import android.support.v7.app.AppCompatActivity;
 
 import java.util.HashMap;
 
@@ -39,11 +39,11 @@ public class SoundManager {
 
     private static final int STRING_NUMBER = 6;
 
-    private AppCompatActivity mActivity;
+    private Activity mActivity;
     private SoundPool mSoundPool;
-    HashMap<Tone, Integer> mMmusicId = new HashMap<Tone, Integer>();
+    private HashMap<Tone, Integer> mMmusicId = new HashMap<Tone, Integer>();
 
-    public SoundManager(AppCompatActivity activity){
+    public SoundManager(Activity activity){
         SoundPool.Builder builder = new SoundPool.Builder();
         builder.setMaxStreams(STRING_NUMBER);
         AudioAttributes attr = new AudioAttributes.Builder().setLegacyStreamType(AudioManager.STREAM_SYSTEM).build();
