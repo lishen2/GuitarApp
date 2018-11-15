@@ -1,6 +1,7 @@
 package com.lingyun.lishen.test1;
 
 import java.util.HashMap;
+import java.util.Set;
 
 public class ChordManager {
     public enum Chord
@@ -169,6 +170,7 @@ public class ChordManager {
         mStrMap.put("Bm", tone);
     }
 
+    /* 设置当前和弦 */
     public void setChord(CharSequence name) {
         mCurTones = mStrMap.get(name);
     }
@@ -177,11 +179,17 @@ public class ChordManager {
         mCurTones = mEnumMap.get(chord);
     }
 
+    /* 获取当前和弦下，每个弦的音 */
     public SoundManager.Tone getTone(Integer strIdx){
         if (strIdx < mCurTones.length){
             return mCurTones[strIdx];
         } else {
             return SoundManager.Tone.TONE_MUTE;
         }
+    }
+
+    /* 获取当前支持的和弦列表，字符串 */
+    public Set<CharSequence> getChordNames(){
+        return mStrMap.keySet();
     }
 }

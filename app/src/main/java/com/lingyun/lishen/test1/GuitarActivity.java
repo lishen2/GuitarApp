@@ -4,17 +4,17 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Switch;
-import android.widget.Toast;
 
-import java.util.HashMap;
-
-public class GuitarActivity extends Activity {
+public class GuitarActivity extends FragmentActivity
+        implements ChordSelectDialogFragment.NoticeDialogListener{
 
     private SoundManager mSoundM;
     private ChordManager mChordM;
@@ -33,7 +33,7 @@ public class GuitarActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_display_message);
+        setContentView(R.layout.activity_guitar);
 
         //new sound manager
         mSoundM = new SoundManager(this);
@@ -64,49 +64,49 @@ public class GuitarActivity extends Activity {
         Button btn;
 
         btn = findViewById(R.id.btnChord1);
-        configOneBtn(btn, pref.getString(getString(R.string.key_btn1), DEFAULT_CHORD));
+        configOneBtn(btn, pref.getString(getResources().getResourceEntryName(btn.getId()), DEFAULT_CHORD));
 
         btn = findViewById(R.id.btnChord2);
-        configOneBtn(btn, pref.getString(getString(R.string.key_btn2), DEFAULT_CHORD));
+        configOneBtn(btn, pref.getString(getResources().getResourceEntryName(btn.getId()), DEFAULT_CHORD));
 
         btn = findViewById(R.id.btnChord3);
-        configOneBtn(btn, pref.getString(getString(R.string.key_btn3), DEFAULT_CHORD));
+        configOneBtn(btn, pref.getString(getResources().getResourceEntryName(btn.getId()), DEFAULT_CHORD));
 
         btn = findViewById(R.id.btnChord4);
-        configOneBtn(btn, pref.getString(getString(R.string.key_btn4), DEFAULT_CHORD));
+        configOneBtn(btn, pref.getString(getResources().getResourceEntryName(btn.getId()), DEFAULT_CHORD));
 
         btn = findViewById(R.id.btnChord5);
-        configOneBtn(btn, pref.getString(getString(R.string.key_btn5), DEFAULT_CHORD));
+        configOneBtn(btn, pref.getString(getResources().getResourceEntryName(btn.getId()), DEFAULT_CHORD));
 
         btn = findViewById(R.id.btnChord6);
-        configOneBtn(btn, pref.getString(getString(R.string.key_btn6), DEFAULT_CHORD));
+        configOneBtn(btn, pref.getString(getResources().getResourceEntryName(btn.getId()), DEFAULT_CHORD));
 
         btn = findViewById(R.id.btnChord7);
-        configOneBtn(btn, pref.getString(getString(R.string.key_btn7), DEFAULT_CHORD));
+        configOneBtn(btn, pref.getString(getResources().getResourceEntryName(btn.getId()), DEFAULT_CHORD));
 
         btn = findViewById(R.id.btnChord8);
-        configOneBtn(btn, pref.getString(getString(R.string.key_btn8), DEFAULT_CHORD));
+        configOneBtn(btn, pref.getString(getResources().getResourceEntryName(btn.getId()), DEFAULT_CHORD));
 
         btn = findViewById(R.id.btnChord9);
-        configOneBtn(btn, pref.getString(getString(R.string.key_btn9), DEFAULT_CHORD));
+        configOneBtn(btn, pref.getString(getResources().getResourceEntryName(btn.getId()), DEFAULT_CHORD));
 
         btn = findViewById(R.id.btnChord10);
-        configOneBtn(btn, pref.getString(getString(R.string.key_btn10), DEFAULT_CHORD));
+        configOneBtn(btn, pref.getString(getResources().getResourceEntryName(btn.getId()), DEFAULT_CHORD));
 
         btn = findViewById(R.id.btnChord11);
-        configOneBtn(btn, pref.getString(getString(R.string.key_btn11), DEFAULT_CHORD));
+        configOneBtn(btn, pref.getString(getResources().getResourceEntryName(btn.getId()), DEFAULT_CHORD));
 
         btn = findViewById(R.id.btnChord12);
-        configOneBtn(btn, pref.getString(getString(R.string.key_btn12), DEFAULT_CHORD));
+        configOneBtn(btn, pref.getString(getResources().getResourceEntryName(btn.getId()), DEFAULT_CHORD));
 
         btn = findViewById(R.id.btnChord13);
-        configOneBtn(btn, pref.getString(getString(R.string.key_btn13), DEFAULT_CHORD));
+        configOneBtn(btn, pref.getString(getResources().getResourceEntryName(btn.getId()), DEFAULT_CHORD));
 
         btn = findViewById(R.id.btnChord14);
-        configOneBtn(btn, pref.getString(getString(R.string.key_btn14), DEFAULT_CHORD));
+        configOneBtn(btn, pref.getString(getResources().getResourceEntryName(btn.getId()), DEFAULT_CHORD));
 
         btn = findViewById(R.id.btnChord15);
-        configOneBtn(btn, pref.getString(getString(R.string.key_btn15), DEFAULT_CHORD));
+        configOneBtn(btn, pref.getString(getResources().getResourceEntryName(btn.getId()), DEFAULT_CHORD));
     }
 
     private void saveConfig(String key, String value){
@@ -152,10 +152,9 @@ public class GuitarActivity extends Activity {
                 mSoundM.playTone(mChordM.getTone(3));
                 break;
             default:
-                return super.onKeyUp(keyCode, event);
         }
 
-        return true;
+        return super.onKeyDown(keyCode, event);
     }
 
     // Create an anonymous implementation of OnClickListener
@@ -214,13 +213,32 @@ public class GuitarActivity extends Activity {
         }
     };
 
+    private Button mCurrentButton;
+
     private View.OnLongClickListener mChordLongClickListener = new View.OnLongClickListener() {
         public boolean onLongClick(View v) {
             if (true == mEditSwitch.isChecked()){
-                
+                /* set current editing button */
+                mCurrentButton = (Button)v;
+                /* show dialog */
+                DialogFragment newFragment = new ChordSelectDialogFragment();
+                newFragment.show(getSupportFragmentManager(), "SelectChords");
             }
             Log.v("eGuitar", "Button long click");
             return true;
         }
     };
+
+    public void onDialogItemClick(DialogFragment dialog, CharSequence name) {
+        Log.v("eGuitar", String.format("Dialog selected item %s", name));
+        SharedPreferences pref = getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = pref.edit();
+
+        editor.putString(getResources().getResourceEntryName(mCurrentButton.getId()), name.toString());
+        editor.commit();
+
+        mCurrentButton.setText(name);
+
+        return;
+    }
 }

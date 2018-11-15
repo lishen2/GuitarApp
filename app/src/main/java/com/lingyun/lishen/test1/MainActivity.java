@@ -22,9 +22,11 @@ public class MainActivity extends AppCompatActivity {
 
     public void sendMessage(View view) {
         Intent intent = new Intent(this, GuitarActivity.class);
-        EditText editText = findViewById(R.id.editText);
-        String message = editText.getText().toString();
-        intent.putExtra(EXTRA_MESSAGE, message);
+        startActivity(intent);
+    }
+
+    public void lunchListTest(View view) {
+        Intent intent = new Intent(this, ListTestActivity.class);
         startActivity(intent);
     }
 

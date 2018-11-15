@@ -37,7 +37,7 @@ public class SoundManager {
         INS_ACOUSTIC_GUITAR,
     };
 
-    private static final int STRING_NUMBER = 6;
+    private static final int STRING_NUMBER = 12;
 
     private Activity mActivity;
     private SoundPool mSoundPool;
@@ -46,7 +46,11 @@ public class SoundManager {
     public SoundManager(Activity activity){
         SoundPool.Builder builder = new SoundPool.Builder();
         builder.setMaxStreams(STRING_NUMBER);
-        AudioAttributes attr = new AudioAttributes.Builder().setLegacyStreamType(AudioManager.STREAM_SYSTEM).build();
+        AudioAttributes attr = new AudioAttributes.Builder()
+                .setUsage(AudioAttributes.USAGE_GAME)
+                .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                .setFlags(AudioAttributes.FLAG_LOW_LATENCY)
+                .build();
         builder.setAudioAttributes(attr);
         mSoundPool = builder.build();
         mActivity = activity;
